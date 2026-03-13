@@ -1,6 +1,7 @@
 // components/Sidebar.tsx
 import { useState, useEffect } from 'react';
 import { Trash2, Plus, Save, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { AppNode } from '../types/graph';
 
 interface SidebarProps {
@@ -15,7 +16,6 @@ export function Sidebar({ selectedNode, onUpdateNode, onAddNode, onDeleteNode, o
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
 
-  // Whenever a new node is selected, populate the form
   useEffect(() => {
     if (selectedNode) {
       setTitle(selectedNode.data.title);
@@ -29,75 +29,82 @@ export function Sidebar({ selectedNode, onUpdateNode, onAddNode, onDeleteNode, o
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-
-    if (selectedNode) {
-      onUpdateNode(selectedNode.id, title, note);
-    } else {
-      onAddNode(title, note);
-      setTitle('');
-      setNote('');
-    }
+    if (selectedNode) { onUpdateNode(selectedNode.id, title, note); } 
+    else { onAddNode(title, note); setTitle(''); setNote(''); }
   };
 
   return (
-    <div className="absolute top-4 right-4 bottom-4 w-80 bg-obsidian-surface/90 backdrop-blur-xl border border-obsidian-border rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-transform z-10">
+    <motion.div 
+      initial={{ x: '100%', opacity: 0, scale: 0.95 }}
+      animate={{ x: 0, opacity: 1, scale: 1 }}
+      exit={{ x: '100%', opacity: 0, scale: 0.95 }}
+      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+      /* Apple Aesthetic: Heavy blur (3xl), translucent background, 
+        squircle borders (rounded-[2rem]), and a soft ring 
+      */
+      className="absolute top-6 right-6 bottom-6 w-84 bg-[#252525]/60 backdrop-blur-3xl ring-1 ring-white/15 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden z-20"
+    >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-obsidian-border bg-obsidian-bg/50">
-        <h2 className="text-lg font-semibold text-white">
-          {selectedNode ? 'Edit Node' : 'Add New Node'}
+      <div className="flex items-center justify-between px-6 pt-6 pb-4">
+        <h2 className="text-xl font-bold text-white tracking-tight">
+          {selectedNode ? 'Edit Topic' : 'New Topic'}
         </h2>
-        <button onClick={onClose} className="p-1 rounded-md text-obsidian-muted hover:text-white hover:bg-obsidian-border transition-colors">
-          <X size={20} />
+        {/* Apple-style frosted close button */}
+        <button 
+          onClick={onClose} 
+          className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full text-white/80 hover:text-white transition-all duration-200 active:scale-90"
+        >
+          <X size={18} strokeWidth={2.5} />
         </button>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-4 flex-grow">
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-obsidian-muted uppercase tracking-wider">Title</label>
+      <form onSubmit={handleSubmit} className="px-6 pb-6 flex flex-col gap-5 flex-grow">
+        <div className="flex flex-col gap-2">
+          <label className="text-[11px] font-semibold text-white/50 uppercase tracking-wider ml-1">Title</label>
+          {/* iOS style input: rounded-2xl, subtle inner shadow, vibrant focus ring */}
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g., React Server Components"
-            className="w-full bg-obsidian-bg border border-obsidian-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-obsidian-accent focus:ring-1 focus:ring-obsidian-accent transition-all"
+            placeholder="e.g., React Core"
+            className="w-full bg-black/20 border border-white/5 rounded-2xl px-4 py-3.5 text-[15px] text-white focus:outline-none focus:ring-2 focus:ring-[#0a84ff] focus:bg-white/10 transition-all shadow-inner placeholder:text-white/30"
           />
         </div>
 
-        <div className="flex flex-col gap-1 flex-grow">
-          <label className="text-xs font-medium text-obsidian-muted uppercase tracking-wider">Note Content</label>
+        <div className="flex flex-col gap-2 flex-grow">
+          <label className="text-[11px] font-semibold text-white/50 uppercase tracking-wider ml-1">Note Content</label>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Describe this topic..."
-            className="w-full h-full min-h-[150px] bg-obsidian-bg border border-obsidian-border rounded-lg px-3 py-2 text-sm text-white resize-none focus:outline-none focus:border-obsidian-accent focus:ring-1 focus:ring-obsidian-accent transition-all"
+            placeholder="Add your notes here..."
+            className="w-full h-full min-h-[150px] bg-black/20 border border-white/5 rounded-2xl px-4 py-3.5 text-[15px] text-white resize-none focus:outline-none focus:ring-2 focus:ring-[#0a84ff] focus:bg-white/10 transition-all shadow-inner placeholder:text-white/30 leading-relaxed"
           />
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2 mt-auto pt-4">
+        <div className="flex gap-3 mt-auto pt-2">
           {selectedNode && (
             <button
               type="button"
-              onClick={() => {
-                onDeleteNode(selectedNode.id);
-                onClose();
-              }}
-              className="flex items-center justify-center p-2 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+              onClick={() => { onDeleteNode(selectedNode.id); onClose(); }}
+              /* Apple destructive styling */
+              className="flex items-center justify-center p-3.5 rounded-2xl bg-white/5 text-[#ff453a] hover:bg-[#ff453a] hover:text-white active:scale-95 transition-all"
               title="Delete Node"
             >
-              <Trash2 size={18} />
+              <Trash2 size={20} />
             </button>
           )}
           <button
             type="submit"
-            className="flex-grow flex items-center justify-center gap-2 bg-obsidian-accent hover:bg-indigo-500 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+            /* Apple Primary Action styling (System Blue) */
+            className="flex-grow flex items-center justify-center gap-2 bg-[#0a84ff] hover:bg-[#0071e3] active:bg-[#005bb5] active:scale-95 text-white py-3.5 px-4 rounded-2xl font-semibold transition-all shadow-md"
           >
             {selectedNode ? <Save size={18} /> : <Plus size={18} />}
             {selectedNode ? 'Save Changes' : 'Create Node'}
           </button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 }
