@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Knowledge Base Graph Explorer
 
-## Getting Started
+## Project Overview
+A high-performance, interactive graph visualization application built with Next.js, React Flow, and Framer Motion. This tool transforms flat CSV seed data into an interconnected, manipulable web of knowledge. It is designed as a client-side single-page application (SPA) with full CRUD capabilities and persistent state management.
 
-First, run the development server:
+## Design System and User Experience
+The application strictly adheres to a premium, iOS-inspired design language to ensure a high-fidelity user experience:
+* **Glassmorphism and Translucency:** Utilizes deep background blurs (`backdrop-blur-3xl`) and translucent overlays to create depth without relying on heavy drop shadows.
+* **Typography and Layout:** Built on the `-apple-system` font stack (San Francisco) with "Grouped Inset" form layouts native to modern Apple environments.
+* **Fluid Motion:** Integrates Framer Motion for GPU-accelerated node entries, smooth sidebar transitions, and interactive scaling physics.
+* **Focus Engine:** Implements a mathematical neighborhood-discovery algorithm. Clicking a node automatically dims unrelated entities (opacity routing), providing immediate cognitive focus on the active relationship tree.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technical Architecture
+The codebase follows a decoupled logic pattern, strictly separating the rendering engine from the data management layer.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### System Data Flow
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```mermaid
+graph TD
+    A[Raw CSV Seed Data] -->|PapaParse| B(useGraphState Hook)
+    B -->|Initial Mount| C{LocalStorage}
+    C -->|Stored Data Exists| D[Hydrate Active State]
+    C -->|Empty Storage| E[Parse Seed State]
+    
+    D --> F[GraphCanvas Component]
+    E --> F
+    
+    F -->|Render| G[React Flow Engine]
+    
+    G -->|Node Rendering| H[Custom Node and Edge UI]
+    G -->|Selection Event| I[Controlled Sidebar Form]
+    
+    I -->|CRUD Operations| B
+    B -->|Silent Sync| C
