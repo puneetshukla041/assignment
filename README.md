@@ -32,3 +32,50 @@ graph TD
     
     I -->|CRUD Operations| B
     B -->|Silent Sync| C
+```
+
+### Directory Structure and Responsibilities
+
+| Directory | Core Responsibility |
+| :--- | :--- |
+| **/app** | Next.js App Router entry point. Configures global theme constants and locks viewport scrolling for the canvas engine. |
+| **/components** | Visual presentation layer. Contains the interactive canvas, custom node/edge renderers, and the sliding sidebar. |
+| **/hooks** | State management layer. Houses `useGraphState.ts`, which isolates data parsing, coordinate math, and `localStorage` syncing from the UI. |
+| **/lib** | Static assets and utility files, including the raw CSV string payloads. |
+| **/types** | Strict TypeScript interfaces (`AppNode`, `AppEdge`) to ensure type safety across data payloads and component props. |
+
+## Core Technologies
+* **Framework:** Next.js 15 (App Router, TypeScript)
+* **Graph Engine:** React Flow
+* **Animation and Motion:** Framer Motion
+* **Styling:** Tailwind CSS v4
+* **Data Parsing:** PapaParse
+* **Icons:** Lucide React
+
+## Local Development Setup
+
+**1. Clone the repository**
+```bash
+git clone [https://github.com/your-username/knowledge-graph-explorer.git](https://github.com/your-username/knowledge-graph-explorer.git)
+cd knowledge-graph-explorer
+```
+
+**2. Install dependencies**
+```bash
+npm install
+```
+
+**3. Start the development server**
+```bash
+npm run dev
+```
+
+**4. Build for Production**
+```bash
+npm run build
+npm run start
+```
+*The application will be available at http://localhost:3000.*
+
+## State Persistence
+This application requires no backend. All state modifications (node positions, text updates, relationship connections, and deletions) are instantaneously synced to the browser's local storage via a custom React hook. Data will survive hard refreshes and tab closures.
