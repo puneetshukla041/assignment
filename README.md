@@ -56,7 +56,7 @@ graph TD
 
 **1. Clone the repository**
 ```bash
-git clone [https://github.com/your-username/knowledge-graph-explorer.git](https://github.com/your-username/knowledge-graph-explorer.git)
+git clone [https://github.com/puneetshukla041/assignment.git](https://github.com/puneetshukla041/assignment.git)
 cd knowledge-graph-explorer
 ```
 
